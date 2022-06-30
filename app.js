@@ -5,31 +5,66 @@
 var soap = require('soap');
 var express = require('express');
 var fs = require('fs');
+const { query } = require('express');
 
 // the splitter function, used by the service
-function splitter_function(args) {
-    console.log('splitter_function');
-    var splitter = args.splitter;
-    var splitted_msg = args.message.split(splitter);
-    var result = [];
-    for(var i=0; i<splitted_msg.length; i++){
-      result.push(splitted_msg[i]);
-    }
-    return {
-        result: result
+function Insert_function(args) {
+    console.log(args);
+    switch(args.Header.ServiceType)
+    
+    {case undefined:return {
+        result: "Saved Successfully!"
         }
+      case "get":
+        {
+          
+        return Query(args);
+      }
+      }
+}
+function Query(args)
+{
+  console.log(args);
+
+return{ status:"query",
+OriginatorConversationID:"OriginatorConversationID",
+ResultType:"ResultType",
+ResultCode:"ResultCode",
+ResultDesc:"ResultDesc",
+TransactionID:"TransactionID"
 }
 
+
+
+
+
+
+
+
+
+
+
+
+}
 // the service
 var serviceObject = {
-  MessageSplitterService: {
-        MessageSplitterServiceSoapPort: {
-            MessageSplitter: splitter_function
+  ResultApiService: {
+        ResultApiServiceSoapPort: {
+            ResultApi: Insert_function
         },
-        MessageSplitterServiceSoap12Port: {
-            MessageSplitter: splitter_function
+        ResultApiServiceSoap12Port: {
+            ResultApi: Insert_function
         }
-    }
+    },QueryService: {
+      QuerySoapPort: {
+     
+          Query:Query
+      },
+      QuerySoap12Port: {
+  
+          Query:Query
+      }
+  }
 };
 
 // load the WSDL file
